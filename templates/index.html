@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Web Scraper Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="dashboard-container">
+      <div class="navbar">
+        <h2>AI Scraper</h2>
+        <ul>
+          <li><a href="#">History</a></li>
+          <li><a href="#">New Chat</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </div>
+      <div class="content-area">
+        <header class="header">
+          <h1>Welcome to the AI-Powered Web Scraper</h1>
+          <p>Scrape, analyze, and get insights from any webpage using AI.</p>
+          <div class="gif-container">
+            <!-- Replace with your GIF demonstrating the scraper -->
+            <img src="scraper_demo.gif" alt="AI Web Scraper Demo" />
+          </div>
+          <button
+            class="try-now-button"
+            onclick="window.location.href='login.html'"
+          >
+            Try Now
+          </button>
+        </header>
+
+        <section class="scraping-section">
+          <h2>Scrape and Ask</h2>
+          <div class="input-group">
+            <label for="url">Enter URL:</label>
+            <input
+              type="text"
+              id="url"
+              placeholder="e.g., https://www.example.com"
+            />
+            <button id="scrape-button">Scrape</button>
+          </div>
+
+          <div class="scraped-content">
+            <h3>Scraped Content:</h3>
+            <textarea
+              id="scraped-text"
+              readonly
+              placeholder="Scraped content will appear here..."
+            ></textarea>
+          </div>
+
+          <div class="input-group">
+            <label for="model-select">Select AI Model:</label>
+            <select id="model-select">
+              <option value="Ollama">Ollama</option>
+              <option value="Deepseek">Deepseek</option>
+              <option value="Gemini">Gemini</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="question">Ask the AI about the content:</label>
+            <textarea
+              id="question"
+              placeholder="Your question here..."
+            ></textarea>
+            <button id="ask-button">Ask AI</button>
+          </div>
+
+          <div class="ai-answer">
+            <h3>AI Answer:</h3>
+            <textarea
+              id="answer-text"
+              readonly
+              placeholder="AI answer will appear here..."
+            ></textarea>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("scrape-button")
+        .addEventListener("click", async () => {
+          const url = document.getElementById("url").value;
+          const response = await fetch("/scrape", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: url }),
+          });
+          const data = await response.json();
+          document.getElementById("scraped-text").value = data.content;
+        });
+
+      document
+        .getElementById("ask-button")
+        .addEventListener("click", async () => {
+          const question = document.getElementById("question").value;
+          const content = document.getElementById("scraped-text").value;
+          const model = document.getElementById("model-select").value;
+          const response = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              question: question,
+              content: content,
+              model: model,
+            }),
+          });
+          const data = await response.json();
+          document.getElementById("answer-text").value = data.answer;
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - AI Web Scraper</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+      }
+
+      .login-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo h1 {
+        color: white;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .logo p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        color: white;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #ff6b6b;
+        box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        z-index: 1;
+      }
+
+      .divider span {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .toggle-form {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .toggle-form a {
+        color: #ff6b6b;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .toggle-form a:hover {
+        text-decoration: underline;
+      }
+
+      .back-home {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .back-home:hover {
+        transform: translateX(-5px);
+      }
+
+      .error-message {
+        background: rgba(255, 0, 0, 0.1);
+        border: 1px solid rgba(255, 0, 0, 0.3);
+        color: #ff6b6b;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: none;
+      }
+
+      .success-message {
+        background: rgba(0, 255, 0, 0.1);
+        border: 1px solid rgba(0, 255, 0, 0.3);
+        color: #4caf50;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: none;
+      }
+
+      @media (max-width: 480px) {
+        .login-container {
+          margin: 1rem;
+          padding: 2rem;
+        }
+
+        .back-home {
+          position: static;
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="dashboard.html" class="back-home"> ← Back to Home </a>
+
+    <div class="login-container">
+      <div class="logo">
+        <h1>🤖 AI Scraper</h1>
+        <p>Welcome back! Please sign in to continue</p>
+      </div>
+
+      <div id="error-message" class="error-message"></div>
+      <div id="success-message" class="success-message"></div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input
+            type="email"
+            id="login-email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input
+            type="password"
+            id="login-password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn" id="login-btn">Sign In</button>
+      </form>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="toggle-form">
+        <p>
+          Don't have an account? <a href="#" id="show-register">Create one</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Register Form (Hidden by default) -->
+    <div class="login-container" id="register-container" style="display: none">
+      <div class="logo">
+        <h1>🤖 AI Scraper</h1>
+        <p>Create your account to get started</p>
+      </div>
+
+      <div id="register-error-message" class="error-message"></div>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label for="register-name">Full Name</label>
+          <input
+            type="text"
+            id="register-name"
+            name="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="register-email">Email</label>
+          <input
+            type="email"
+            id="register-email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <input
+            type="password"
+            id="register-password"
+            name="password"
+            placeholder="Create a password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="register-confirm-password">Confirm Password</label>
+          <input
+            type="password"
+            id="register-confirm-password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn" id="register-btn">
+          Create Account
+        </button>
+      </form>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="toggle-form">
+        <p>Already have an account? <a href="#" id="show-login">Sign in</a></p>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        updateProfile,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+      // Firebase configuration - Replace with your config
+      const firebaseConfig = {
+        apiKey: "AIzaSyAEN8yJeoOQPNzOpLnbDAFNS2tgNUYmxKE",
+        authDomain: "aiscraper-24045.firebaseapp.com",
+        projectId: "aiscraper-24045",
+        storageBucket: "aiscraper-24045.firebasestorage.app",
+        messagingSenderId: "709160852517",
+        appId: "1:709160852517:web:20f51a4348a73c441fb3cc",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // DOM elements
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+      const loginContainer = document.querySelector(".login-container");
+      const registerContainer = document.getElementById("register-container");
+      const showRegisterLink = document.getElementById("show-register");
+      const showLoginLink = document.getElementById("show-login");
+
+      // Auth state listener
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // If user is logged in, redirect to the dashboard
+          window.location.href = "index.html";
+        }
+      });
+
+      // Show/Hide forms
+      showRegisterLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        loginContainer.style.display = "none";
+        registerContainer.style.display = "block";
+      });
+
+      showLoginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        registerContainer.style.display = "none";
+        loginContainer.style.display = "block";
+      });
+
+      // Register functionality
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("register-name").value;
+        const email = document.getElementById("register-email").value;
+        const password = document.getElementById("register-password").value;
+        const confirmPassword = document.getElementById(
+          "register-confirm-password"
+        ).value;
+        const errorElement = document.getElementById("register-error-message");
+        const registerBtn = document.getElementById("register-btn");
+
+        // Clear previous errors
+        errorElement.style.display = "none";
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          showError("register-error-message", "Passwords do not match");
+          return;
+        }
+
+        if (password.length < 6) {
+          showError(
+            "register-error-message",
+            "Password must be at least 6 characters"
+          );
+          return;
+        }
+
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Creating Account...";
+
+        try {
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Update user profile with name
+          await updateProfile(user, {
+            displayName: name,
+          });
+
+          // Show success message
+          showSuccess(
+            "success-message",
+            "Account created successfully! Please sign in."
+          );
+
+          // Switch to login form after success
+          setTimeout(() => {
+            registerContainer.style.display = "none";
+            loginContainer.style.display = "block";
+            registerForm.reset();
+          }, 2000);
+        } catch (error) {
+          showError("register-error-message", getErrorMessage(error.code));
+        } finally {
+          registerBtn.disabled = false;
+          registerBtn.textContent = "Create Account";
+        }
+      });
+
+      // Login functionality
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+        const loginBtn = document.getElementById("login-btn");
+
+        // Clear previous errors
+        document.getElementById("error-message").style.display = "none";
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Signing In...";
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Store user info in localStorage
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+            })
+          );
+
+          // Redirect to main app
+          window.location.href = "index.html";
+        } catch (error) {
+          showError("error-message", getErrorMessage(error.code));
+        } finally {
+          loginBtn.disabled = false;
+          loginBtn.textContent = "Sign In";
+        }
+      });
+
+      // Helper functions
+      function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId);
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+      }
+
+      function showSuccess(elementId, message) {
+        const successElement = document.getElementById(elementId);
+        successElement.textContent = message;
+        successElement.style.display = "block";
+      }
+
+      function getErrorMessage(errorCode) {
+        switch (errorCode) {
+          case "auth/user-not-found":
+            return "No account found with this email address.";
+          case "auth/wrong-password":
+            return "Incorrect password.";
+          case "auth/email-already-in-use":
+            return "An account with this email already exists.";
+          case "auth/weak-password":
+            return "Password is too weak.";
+          case "auth/invalid-email":
+            return "Invalid email address.";
+          case "auth/too-many-requests":
+            return "Too many failed attempts. Please try again later.";
+          default:
+            return "An error occurred. Please try again.";
+        }
+      }
+    </script>
+  </body>
+</html>

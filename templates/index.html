@@ -1,121 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Web Scraper Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web Scraper - Main App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <body>
-    <div class="dashboard-container">
-      <div class="navbar">
-        <h2>AI Scraper</h2>
-        <ul>
-          <li><a href="#">History</a></li>
-          <li><a href="#">New Chat</a></li>
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </div>
-      <div class="content-area">
-        <header class="header">
-          <h1>Welcome to the AI-Powered Web Scraper</h1>
-          <p>Scrape, analyze, and get insights from any webpage using AI.</p>
-          <div class="gif-container">
-            <!-- Replace with your GIF demonstrating the scraper -->
-            <img src="scraper_demo.gif" alt="AI Web Scraper Demo" />
-          </div>
-          <button
-            class="try-now-button"
-            onclick="window.location.href='login.html'"
-          >
-            Try Now
-          </button>
-        </header>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 107, 107, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 107, 107, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+
+        .welcome {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .welcome h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .scraping-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-right: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #2196f3, #1976d2);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .url-input-container .input-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .content-display {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .model-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .model-card.selected {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .model-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .model-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .model-description {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .responses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .response-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .response-content {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .url-input-container {
+                flex-direction: column;
+            }
+            
+            .url-input-container .input-group {
+                margin-bottom: 1rem;
+            }
+            
+            .responses-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">🤖 AI Scraper</a>
+            <div class="user-info">
+                <span id="user-name">Welcome, User!</span>
+                <button class="logout-btn" id="logout-btn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="welcome">
+            <h1>🚀 Welcome to AI Web Scraper</h1>
+            <p>Scrape any website and get intelligent insights from multiple AI models</p>
+        </section>
 
         <section class="scraping-section">
-          <h2>Scrape and Ask</h2>
-          <div class="input-group">
-            <label for="url">Enter URL:</label>
-            <input
-              type="text"
-              id="url"
-              placeholder="e.g., https://www.example.com"
-            />
-            <button id="scrape-button">Scrape</button>
-          </div>
+            <h2 class="section-title">🔍 Website Scraper</h2>
+            
+            <div class="url-input-container">
+                <div class="input-group">
+                    <label for="url-input">Website URL</label>
+                    <input type="url" id="url-input" placeholder="https://example.com" required>
+                </div>
+                <button class="btn" id="scrape-btn">Scrape Website</button>
+            </div>
 
-          <div class="scraped-content">
-            <h3>Scraped Content:</h3>
-            <textarea
-              id="scraped-text"
-              readonly
-              placeholder="Scraped content will appear here..."
-            ></textarea>
-          </div>
-
-          <div class="input-group">
-            <label for="model-select">Select AI Model:</label>
-            <select id="model-select">
-              <option value="Ollama">Ollama</option>
-              <option value="Deepseek">Deepseek</option>
-              <option value="Gemini">Gemini</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label for="question">Ask the AI about the content:</label>
-            <textarea
-              id="question"
-              placeholder="Your question here..."
-            ></textarea>
-            <button id="ask-button">Ask AI</button>
-          </div>
-
-          <div class="ai-answer">
-            <h3>AI Answer:</h3>
-            <textarea
-              id="answer-text"
-              readonly
-              placeholder="AI answer will appear here..."
-            ></textarea>
-          </div>
+            <div class="input-group">
+                <label for="scraped-content">Scraped Content</label>
+                <div id="scraped-content" class="content-display">
+                    Content will appear here after scraping...
+                </div>
+            </div>
         </section>
-      </div>
+
+        <section class="scraping-section">
+            <h2 class="section-title">🤖 AI Analysis</h2>
+            
+            <div class="input-group">
+                <label>Select AI Models</label>
+                <div class="model-selection">
+                    <div class="model-card" data-model="gemini">
+                        <div class="model-icon">🔷</div>
+                        <div class="model-name">Google Gemini</div>
+                        <div class="model-description">Advanced reasoning and analysis</div>
+                    </div>
+                    <div class="model-card" data-model="deepseek">
+                        <div class="model-icon">🧊</div>
+                        <div class="model-name">DeepSeek R1</div>
+                        <div class="model-description">Cutting-edge reasoning model</div>
+                    </div>
+                    <div class="model-card" data-model="llama">
+                        <div class="model-icon">🦙</div>
+                        <div class="model-name">Llama Maverick</div>
+                        <div class="model-description">Meta's powerful language model</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="question-input">Ask AI about the content</label>
+                <textarea id="question-input" rows="3" placeholder="What insights can you provide about this content?"></textarea>
+            </div>
+
+            <button class="btn btn-secondary" id="ask-btn">Ask AI Models</button>
+        </section>
+
+        <section id="responses-section" style="display: none;" class="scraping-section">
+            <h2 class="section-title">🎯 AI Responses</h2>
+            <div id="responses-container" class="responses-container">
+                <!-- AI responses will be populated here -->
+            </div>
+        </section>
     </div>
 
-    <script>
-      document
-        .getElementById("scrape-button")
-        .addEventListener("click", async () => {
-          const url = document.getElementById("url").value;
-          const response = await fetch("/scrape", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: url }),
-          });
-          const data = await response.json();
-          document.getElementById("scraped-text").value = data.content;
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Firebase configuration - Replace with your config
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Check if user is authenticated
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('user-name').textContent = `Welcome, ${user.displayName || user.email}!`;
+            } else {
+                window.location.href = 'login.html';
+            }
         });
 
-      document
-        .getElementById("ask-button")
-        .addEventListener("click", async () => {
-          const question = document.getElementById("question").value;
-          const content = document.getElementById("scraped-text").value;
-          const model = document.getElementById("model-select").value;
-          const response = await fetch("/ask", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              question: question,
-              content: content,
-              model: model,
-            }),
-          });
-          const data = await response.json();
-          document.getElementById("answer-text").value = data.answer;
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                localStorage.removeItem('user');
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+            }
         });
     </script>
-  </body>
+
+    <script>
+        // Global variables
+        let scrapedData = null;
+        let selectedModels = new Set(['gemini']); // Default selection
+
+        // DOM elements
+        const scrapeBtn = document.getElementById('scrape-btn');
+        const askBtn = document.getElementById('ask-btn');
+        const urlInput = document.getElementById('url-input');
+        const questionInput = document.getElementById('question-input');
+        const scrapedContent = document.getElementById('scraped-content');
+        const responsesSection = document.getElementById('responses-section');
+        const responsesContainer = document.getElementById('responses-container');
+        const modelCards = document.querySelectorAll('.model-card');
+
+        // Model selection
+        modelCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const model = card.dataset.model;
+                if (selectedModels.has(model)) {
+                    selectedModels.delete(model);
+                    card.classList.remove('selected');
+                } else {
+                    selectedModels.add(model);
+                    card.classList.add('selected');
+                }
+            });
+        });
+
+        // Set default selection
+        document.querySelector('[data-model="gemini"]').classList.add('selected');
+
+        // Scrape website
+        scrapeBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            scrapeBtn.disabled = true;
+            scrapeBtn.textContent = 'Scraping...';
+            scrapedContent.innerHTML = '<div class="loading"><div class="spinner"></div>Scraping website...</div>';
+
+            try {
+                const response = await fetch('/scrape', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                scrapedData = data;
+                
+                // Display scraped content
+                let displayContent = '';
+                if (data.titles && data.titles.length > 0) {
+                    displayContent += '=== TITLES ===\n' + data.titles.join('\n') + '\n\n';
+                }
+                if (data.paragraphs && data.paragraphs.length > 0) {
+                    displayContent += '=== CONTENT ===\n' + data.paragraphs.join('\n\n') + '\n\n';
+                }
+                if (data.links && data.links.length > 0) {
+                    displayContent += '=== LINKS ===\n' + data.links.map(link => `${link.text}: ${link.url}`).join('\n');
+                }
+
+                scrapedContent.textContent = displayContent || 'No content found';
+
+            } catch (error) {
+                console.error('Error scraping website:', error);
+                scrapedContent.innerHTML = `<div class="error-message">Error scraping website: ${error.message}</div>`;
+            } finally {
+                scrapeBtn.disabled = false;
+                scrapeBtn.textContent = 'Scrape Website';
+            }
+        });
+
+        // Ask AI
+        askBtn.addEventListener('click', async () => {
+            if (!scrapedData) {
+                alert('Please scrape a website first');
+                return;
+            }
+
+            const question = questionInput.value.trim();
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+
+            if (selectedModels.size === 0) {
+                alert('Please select at least one AI model');
+                return;
+            }
+
+            askBtn.disabled = true;
+            askBtn.textContent = 'Asking AI...';
+            responsesSection.style.display = 'block';
+            responsesContainer.innerHTML = '<div class="loading"><div class="spinner"></div>Getting AI responses...</div>';
+
+            try {
+                const promises = Array.from(selectedModels).map(async (model) => {
+                    const response = await fetch('/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            question: question,
+                            context: scrapedData,
+                            model: model
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return { model, response: data.answer };
+                });
+
+                const results = await Promise.all(promises);
+                displayResponses(results);
+
+            } catch (error) {
+                console.error('Error asking AI:', error);
+                responsesContainer.innerHTML = `<div class="error-message">Error getting AI responses: ${error.message}</div>`;
+            } finally {
+                askBtn.disabled = false;
+                askBtn.textContent = 'Ask AI Models';
+            }
+        });
+
+        function displayResponses(results) {
+            const modelInfo = {
+                gemini: { name: 'Google Gemini', icon: '🔷', color: '#4285f4' },
+                deepseek: { name: 'DeepSeek R1', icon: '🧊', color: '#6366f1' },
+                llama: { name: 'Llama Maverick', icon: '🦙', color: '#8b5cf6' }
+            };
+
+            responsesContainer.innerHTML = results.map(result => {
+                const info = modelInfo[result.model];
+                return `
+                    <div class="response-card">
+                        <div class="response-header">
+                            <span style="font-size: 1.5rem;">${info.icon}</span>
+                            <div>
+                                <div class="model-name" style="color: ${info.color};">${info.name}</div>
+                            </div>
+                        </div>
+                        <div class="response-content">${result.response}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
 </html>

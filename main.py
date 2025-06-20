@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-
+app = Flask(__name__, static_folder='static')
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'fallback-secret-key')
 
@@ -20,15 +20,19 @@ logger = logging.getLogger(__name__)
 @app.route('/')
 @app.route('/dashboard.html')
 def dashboard():
-    return send_from_directory('templates', 'dashboard.html')
+    return render_template('dashboard.html')
 
 @app.route('/login.html')
 def login():
-    return send_from_directory('templates', 'login.html')
+    return render_template('login.html')
+
+@app.route('/register.html')
+def register():
+    return render_template('register.html')
 
 @app.route('/index.html')
 def main_app():
-    return send_from_directory('templates', 'index.html')
+    return render_template('index.html')
 
 @app.route('/style.css')
 def style():
@@ -173,3 +177,14 @@ if __name__ == '__main__':
     logger.info(f"Available AI models: {', '.join(MODEL_CONFIG.keys())}")
     
     app.run(host='0.0.0.0', port=5000, debug=True)
+    
+@app.route('/model-config', methods=['GET'])
+def get_model_config():
+    """Get available AI models configuration"""
+    try:
+        # Import MODEL_CONFIG from api.py
+        from api import MODEL_CONFIG
+        return jsonify(MODEL_CONFIG)
+    except Exception as e:
+        logger.error(f"Error in model-config endpoint: {str(e)}")
+        return jsonify({'error': f'Server error: {str(e)}'}), 500

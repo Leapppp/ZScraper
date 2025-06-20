@@ -4,283 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Web Scraper - Dashboard</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        color: #333;
-      }
-
-      .navbar {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 1rem 2rem;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 1000;
-      }
-
-      .navbar-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-
-      .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: white;
-        text-decoration: none;
-      }
-
-      .nav-links {
-        display: flex;
-        list-style: none;
-        gap: 2rem;
-      }
-
-      .nav-links a {
-        color: white;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-      }
-
-      .nav-links a:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        margin-top: 80px;
-      }
-
-      .hero {
-        text-align: center;
-        padding: 4rem 0;
-        color: white;
-      }
-
-      .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(45deg, #fff, #e0e7ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .hero p {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-      }
-
-      .try-now-btn {
-        display: inline-block;
-        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        color: white;
-        padding: 1rem 3rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-size: 1.2rem;
-        font-weight: bold;
-        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .try-now-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
-      }
-
-      .try-now-btn::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.2),
-          transparent
-        );
-        transition: left 0.5s;
-      }
-
-      .try-now-btn:hover::before {
-        left: 100%;
-      }
-
-      .features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 4rem 0;
-      }
-
-      .feature-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 2rem;
-        text-align: center;
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-      }
-
-      .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      }
-
-      .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-      }
-
-      .feature-card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-      }
-
-      .info-section {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 3rem;
-        margin: 3rem 0;
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .info-section h2 {
-        font-size: 2rem;
-        margin-bottom: 2rem;
-        text-align: center;
-      }
-
-      .prompt-examples {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin: 2rem 0;
-      }
-
-      .prompt-card {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 1.5rem;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-      }
-
-      .prompt-card:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: scale(1.02);
-      }
-
-      .prompt-card h4 {
-        color: #ffeb3b;
-        margin-bottom: 0.5rem;
-      }
-
-      .quick-access {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin: 2rem 0;
-      }
-
-      .quick-btn {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        padding: 0.8rem 2rem;
-        border-radius: 25px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-      }
-
-      .quick-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 2rem 0;
-      }
-
-      .stat-card {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .stat-number {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #ffeb3b;
-      }
-
-      .stat-label {
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-
-      @media (max-width: 768px) {
-        .navbar {
-          padding: 1rem;
-        }
-
-        .nav-links {
-          display: none;
-        }
-
-        .hero h1 {
-          font-size: 2.5rem;
-        }
-
-        .container {
-          padding: 1rem;
-        }
-      }
-    </style>
   </head>
   <body>
     <nav class="navbar">
       <div class="navbar-content">
-        <a href="#" class="logo">🤖 AI Scraper</a>
+        <a href="#" class="logo"
+          ><img
+            src="{{ url_for('static', filename='image/logo.png') }}"
+            alt="logo"
+            style="width: 50px; height: auto"
+        /></a>
         <ul class="nav-links">
           <li><a href="#features">Features</a></li>
           <li><a href="#examples">Examples</a></li>
-          <li><a href="#about">About</a></li>
+          <li><a href="login.html">Login</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -288,7 +25,7 @@
 
     <div class="container">
       <section class="hero">
-        <h1>AI-Powered Web Scraper</h1>
+        <h1>ZScraper - AI Powered Web Scraper</h1>
         <p>
           Scrape any webpage and get intelligent insights using cutting-edge AI
           models
@@ -298,28 +35,53 @@
 
       <section class="features" id="features">
         <div class="feature-card">
-          <div class="feature-icon">🚀</div>
+          <div class="feature-icon">
+            <img
+              src="{{ url_for('static', filename='image/rocket.png') }}"
+              alt="rocket icon"
+              style="width: 100px; height: auto"
+            />
+          </div>
           <h3>Lightning Fast</h3>
           <p>
             Scrape and analyze websites in seconds with our optimized algorithms
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🧠</div>
+          <div class="feature-icon">
+            <img
+              src="{{ url_for('static', filename='image/brain.png') }}"
+              alt="brain icon"
+              style="width: 100px; height: auto"
+            />
+          </div>
           <h3>AI-Powered Analysis</h3>
           <p>
             Get intelligent insights from Gemini, DeepSeek, and Llama models
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📊</div>
+          <div class="feature-icon">
+            <img
+              src="{{ url_for('static', filename='image/datas.png') }}"
+              alt="Data icon"
+              style="width: 100px; height: auto"
+            />
+          </div>
           <h3>Smart Data Extraction</h3>
           <p>Extract tables, links, and structured data automatically</p>
         </div>
       </section>
 
       <section class="info-section">
-        <h2>📈 Dashboard Statistics</h2>
+        <h2>
+          <img
+            src="{{ url_for('static', filename='image/stat.png') }}"
+            alt="stat icon"
+            style="width: 50px; height: auto"
+          />
+          <br />Dashboard Statistics
+        </h2>
         <div class="stats">
           <div class="stat-card">
             <div class="stat-number">3</div>
@@ -341,7 +103,13 @@
       </section>
 
       <section class="info-section" id="examples">
-        <h2>💡 Example Prompts</h2>
+        <h2>
+          <img
+            src="{{ url_for('static', filename='image/bulb.png') }}"
+            alt="bulb icon"
+            style="width: 50px; height: auto"
+          /><br />Example Prompts
+        </h2>
         <div class="prompt-examples">
           <div class="prompt-card">
             <h4>Content Analysis</h4>
@@ -371,23 +139,61 @@
       </section>
 
       <section class="info-section">
-        <h2>⚡ Quick Access</h2>
+        <h2>
+          <img
+            src="{{ url_for('static', filename='image/lightning.png') }}"
+            alt="lightning icon"
+            style="width: 50px; height: auto"
+          /><br />Quick Access
+        </h2>
         <p style="text-align: center; margin-bottom: 2rem">
           Jump straight to the features you need most
         </p>
         <div class="quick-access">
-          <a href="login.html" class="quick-btn">🔍 Start Scraping</a>
-          <a href="login.html" class="quick-btn">🤖 AI Analysis</a>
-          <a href="login.html" class="quick-btn">📊 Data Export</a>
-          <a href="login.html" class="quick-btn">📈 Analytics</a>
+          <a href="login.html" class="quick-btn"
+            ><img
+              src="{{ url_for('static', filename='image/magni.png') }}"
+              alt="magni icon"
+              style="width: 50px; height: auto"
+          /></a>
+          <a href="login.html" class="quick-btn"
+            ><img
+              src="{{ url_for('static', filename='image/ai.png') }}"
+              alt="ai icon"
+              style="width: 50px; height: auto"
+          /></a>
+          <a href="login.html" class="quick-btn"
+            ><img
+              src="{{ url_for('static', filename='image/datas.png') }}"
+              alt="datas icon"
+              style="width: 50px; height: auto"
+          /></a>
+          <a href="login.html" class="quick-btn"
+            ><img
+              src="{{ url_for('static', filename='image/stat.png') }}"
+              alt="stat icon"
+              style="width: 50px; height: auto"
+          /></a>
         </div>
       </section>
 
       <section class="info-section">
-        <h2>🔮 AI Models Available</h2>
+        <h2>
+          <img
+            src="{{ url_for('static', filename='image/ai.png') }}"
+            alt="ai icon"
+            style="width: 50px; height: auto"
+          /><br />AI Models Available
+        </h2>
         <div class="features">
           <div class="feature-card">
-            <div class="feature-icon">🔷</div>
+            <div class="feature-icon">
+              <img
+                src="{{ url_for('static', filename='image/gemini_logo.png') }}"
+                alt="Gemini Logo"
+                style="width: 150px; height: auto"
+              />
+            </div>
             <h3>Google Gemini</h3>
             <p>
               Advanced reasoning and multilingual capabilities for comprehensive
@@ -395,14 +201,26 @@
             </p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🧊</div>
+            <div class="feature-icon">
+              <img
+                src="{{ url_for('static', filename='image/deepseek_logo.png') }}"
+                alt="Deepseek Logo"
+                style="width: 100px; height: auto"
+              />
+            </div>
             <h3>DeepSeek R1</h3>
             <p>
               Cutting-edge reasoning model for complex problem-solving tasks
             </p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🦙</div>
+            <div class="feature-icon">
+              <img
+                src="{{ url_for('static', filename='image/llama_logo.png') }}"
+                alt="Llama Logo"
+                style="width: 100px; height: auto"
+              />
+            </div>
             <h3>Llama Maverick</h3>
             <p>
               Meta's powerful language model for versatile text understanding
@@ -412,4 +230,276 @@
       </section>
     </div>
   </body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(
+        135deg,
+        rgb(19, 25, 36) 0%,
+        rgb(27, 35, 48) 100%
+      );
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .navbar {
+      background: rgba(106, 122, 136, 0.77);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      margin-top: 80px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 0;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(45deg, #fff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .try-now-btn {
+      display: inline-block;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+      color: white;
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .try-now-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+    }
+
+    .try-now-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: left 0.5s;
+    }
+
+    .try-now-btn:hover::before {
+      left: 100%;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem;
+      margin: 3rem 0;
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .info-section h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .prompt-examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .prompt-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .prompt-card:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.02);
+    }
+
+    .prompt-card h4 {
+      color: #ffeb3b;
+      margin-bottom: 0.5rem;
+    }
+
+    .quick-access {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+
+    .quick-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .quick-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffeb3b;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
 </html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - ZScraper</title>
+    <title>Register - ZScraper</title>
     <style>
       * {
         margin: 0;
@@ -21,7 +21,7 @@
         color: #fff;
       }
 
-      .login-container {
+      .register-container {
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         border-radius: 20px;
@@ -95,13 +95,17 @@
         font-size: 1rem;
         font-weight: bold;
         cursor: pointer;
-        transition: all 0.3s ease;
         margin-bottom: 1rem;
+        transition: all 0.3s ease;
       }
 
       .btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 191, 165, 0.3);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
       }
 
       .error-message,
@@ -138,46 +142,28 @@
       .login-link a:hover {
         text-decoration: underline;
       }
-
-      .loading {
-        display: none;
-        text-align: center;
-        margin: 1rem 0;
-      }
-
-      .spinner {
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top: 3px solid white;
-        width: 20px;
-        height: 20px;
-        animation: spin 1s linear infinite;
-        display: inline-block;
-        vertical-align: middle;
-        margin-right: 8px;
-      }
-
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
     </style>
   </head>
   <body>
-    <div class="login-container">
+    <div class="register-container">
       <div class="logo">
         <img src="{{ url_for('static', filename='image/logo.png') }}" alt="ZScraper Logo" />
-        <p>Welcome back! Please sign in to continue</p>
+        <p>Create your account to get started</p>
       </div>
 
       <div id="error-message" class="error-message"></div>
       <div id="success-message" class="success-message"></div>
-      <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <span>Signing in...</span>
-      </div>
 
-      <form id="login-form">
+      <form id="register-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
         <div class="form-group">
           <label for="email">Email</label>
           <input
@@ -185,7 +171,6 @@
             id="email"
             placeholder="Enter your email"
             required
-            autocomplete="username"
           />
         </div>
         <div class="form-group">
@@ -193,18 +178,26 @@
           <input
             type="password"
             id="password"
-            placeholder="Enter your password"
+            placeholder="Create a password"
             required
-            autocomplete="current-password"
           />
         </div>
-        <button type="submit" class="btn" id="login-btn">
-          Sign In
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm-password"
+            placeholder="Confirm your password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn" id="register-btn">
+          Create Account
         </button>
       </form>
 
       <div class="login-link">
-        Don't have an account? <a href="register.html">Create one</a>
+        Already have an account? <a href="login.html">Sign in</a>
       </div>
     </div>
 
@@ -213,11 +206,9 @@
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
       import {
         getAuth,
-        signInWithEmailAndPassword,
-        onAuthStateChanged,
+        createUserWithEmailAndPassword,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-      // Firebase configuration - Replace with your config
       const firebaseConfig = {
         apiKey: "AIzaSyAEN8yJeoOQPNzOpLnbDAFNS2tgNUYmxKE",
         authDomain: "aiscraper-24045.firebaseapp.com",
@@ -227,136 +218,63 @@
         appId: "1:709160852517:web:20f51a4348a73c441fb3cc",
       };
 
-      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
-      console.log("Firebase initialized successfully");
 
-      // DOM elements
-      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
       const errorMessage = document.getElementById("error-message");
       const successMessage = document.getElementById("success-message");
-      const loadingElement = document.getElementById("loading");
-      const loginBtn = document.getElementById("login-btn");
+      const registerBtn = document.getElementById("register-btn");
 
-      // Redirect if already logged in
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          console.log("User already logged in:", user.email);
-          window.location.href = "index.html";
-        } else {
-          console.log("No user currently logged in");
-        }
-      });
-
-      // Login form submission
-      loginForm.addEventListener("submit", async (e) => {
+      registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirm-password").value;
 
-        // Input validation
-        if (!email || !password) {
-          showError("Email and password are required");
+        if (password !== confirmPassword) {
+          errorMessage.textContent = "Passwords do not match";
+          errorMessage.style.display = "block";
           return;
         }
 
-        // Email format validation
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          showError("Please enter a valid email address");
-          return;
-        }
-
-        // Clear previous messages
-        hideMessages();
-        showLoading();
+        errorMessage.style.display = "none";
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Creating account...";
 
         try {
-          console.log("Attempting to sign in with:", email);
-          const userCredential = await signInWithEmailAndPassword(
+          const userCredential = await createUserWithEmailAndPassword(
             auth,
             email,
             password
           );
-          
-          // Store user data in localStorage
-          localStorage.setItem("user", JSON.stringify({
-            email: userCredential.user.email,
-            uid: userCredential.user.uid
-          }));
 
-          console.log("Login successful:", userCredential.user);
-          showSuccess("Login successful! Redirecting...");
-          
-          // Redirect after short delay
+          // Store additional user data (name) in localStorage
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              email: email,
+              name: name,
+            })
+          );
+
+          successMessage.textContent =
+            "Registration successful! Redirecting...";
+          successMessage.style.display = "block";
           setTimeout(() => {
             window.location.href = "index.html";
           }, 1500);
         } catch (error) {
-          console.error("Login error:", error);
-          handleLoginError(error);
+          errorMessage.textContent = error.message;
+          errorMessage.style.display = "block";
         } finally {
-          hideLoading();
+          registerBtn.disabled = false;
+          registerBtn.textContent = "Create Account";
         }
       });
-
-      // Helper functions
-      function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = "block";
-        successMessage.style.display = "none";
-      }
-
-      function showSuccess(message) {
-        successMessage.textContent = message;
-        successMessage.style.display = "block";
-        errorMessage.style.display = "none";
-      }
-
-      function hideMessages() {
-        errorMessage.style.display = "none";
-        successMessage.style.display = "none";
-      }
-
-      function showLoading() {
-        loadingElement.style.display = "block";
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = '<div class="spinner"></div> Signing in...';
-      }
-
-      function hideLoading() {
-        loadingElement.style.display = "none";
-        loginBtn.disabled = false;
-        loginBtn.textContent = "Sign In";
-      }
-
-      function handleLoginError(error) {
-        let errorMessage = "Login failed. Please try again.";
-        
-        switch(error.code) {
-          case "auth/invalid-email":
-            errorMessage = "Invalid email format";
-            break;
-          case "auth/user-not-found":
-            errorMessage = "No account found with this email";
-            break;
-          case "auth/wrong-password":
-            errorMessage = "Incorrect password";
-            break;
-          case "auth/too-many-requests":
-            errorMessage = "Too many attempts. Account temporarily locked. Try again later.";
-            break;
-          case "auth/user-disabled":
-            errorMessage = "This account has been disabled";
-            break;
-          case "auth/network-request-failed":
-            errorMessage = "Network error. Please check your internet connection";
-            break;
-        }
-        
-        showError(errorMessage);
-      }
     </script>
   </body>
 </html>
